@@ -30,7 +30,7 @@ namespace PoissonEvaluator
 			long i = 0;
 			var sum = 0.0;
 			var infinityIsFound = false;
-			var piDivTwo = Math.Log(Math.PI) / 2;
+			var logPiDivTwo = Math.Log(Math.PI) / 2;
 			while (i <= k)
 			{
 				double n;
@@ -38,7 +38,7 @@ namespace PoissonEvaluator
 				{
 					var a = Math.Log(i * (1 + 4 * i * (1 + 2 * i))) / 6;
 
-					var lnN = i * Math.Log(lambda) - (i * Math.Log(i) - i + a + piDivTwo);
+					var lnN = i * Math.Log(lambda) - (i * Math.Log(i) - i + a + logPiDivTwo);
 					n = Math.Pow(Math.E, lnN - lambda);
 				}
 				else
@@ -47,7 +47,7 @@ namespace PoissonEvaluator
 					{
 						infinityIsFound = true;
 						var a = Math.Log(i * (1 + 4 * i * (1 + 2 * i))) / 6;
-						var lnN = i * Math.Log(lambda) - (i * Math.Log(i) - i + a + piDivTwo);
+						var lnN = i * Math.Log(lambda) - (i * Math.Log(i) - i + a + logPiDivTwo);
 						n = Math.Pow(Math.E, lnN - lambda);
 					}
 					else
