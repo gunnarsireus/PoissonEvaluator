@@ -4,16 +4,16 @@ namespace PoissonEvaluator
 {
 	public class PoissonDistribution
 	{
-		readonly double _lambda;
+		private readonly double _lambda;
 
 		public PoissonDistribution(double lambda = 1.0)
 		{
-			this._lambda = lambda;
+			_lambda = lambda;
 		}
 
 		public double Pmf(long k)
 		{
-			if (double.IsInfinity(Math.Pow(_lambda, k)))
+			if (k > 170 || double.IsInfinity(Math.Pow(_lambda, k)))
 			{
 				var logLambda = k * Math.Log(_lambda) - _lambda - (k * Math.Log(k) - k + Math.Log(k * (1 + 4 * k * (1 + 2 * k))) / 6 + Math.Log(Math.PI) / 2);
 				return Math.Pow(Math.E, logLambda);
@@ -23,10 +23,10 @@ namespace PoissonEvaluator
 
 		public double Cdf(long k)
 		{
-			var e = Math.Pow(Math.E, -_lambda);
 			long i = 0;
 			var sum = 0.0;
 			var infinityIsFound = false;
+			var eLambda = Math.Pow(Math.E, -_lambda);
 			var logPiDivTwo = Math.Log(Math.PI) / 2;
 			while (i <= k)
 			{
@@ -34,7 +34,6 @@ namespace PoissonEvaluator
 				if (infinityIsFound)
 				{
 					var log6ThTail = Math.Log(i * (1 + 4 * i * (1 + 2 * i))) / 6;
-
 					var lnN = i * Math.Log(_lambda) - (i * Math.Log(i) - i + log6ThTail + logPiDivTwo);
 					n = Math.Pow(Math.E, lnN - _lambda);
 				}
@@ -49,7 +48,7 @@ namespace PoissonEvaluator
 					}
 					else
 					{
-						n = e * Math.Pow(_lambda, i) / Factorial(i);
+						n = eLambda * Math.Pow(_lambda, i) / Factorial(i);
 					}
 				}
 
@@ -110,7 +109,6 @@ namespace PoissonEvaluator
 
 		public double Factorial12(double k)
 		{
-			//var factorial = Math.Pow(Math.E, k * Math.Log(k)) * Math.Pow(Math.E, -k -1);
 			var factorial = Math.Sqrt((2 * k + 1.0 / 3) * Math.PI) * Math.Pow(k, k) * Math.Pow(Math.E, -k);
 			return factorial;
 		}
