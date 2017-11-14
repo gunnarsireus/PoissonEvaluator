@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace PoissonEvaluator
@@ -13,15 +14,14 @@ namespace PoissonEvaluator
 			this.lambda = lambda;
 		}
 
-		public double PMF(int k)
+		public double PMF(long k)
 		{
-			//(l^k / k! ) * e^-l
-			//l = lamda
-			double kFactorial = Factorial(k);
-			double numerator = Math.Pow(Math.E, -lambda) * Math.Pow(lambda, k);
-
-			double p = numerator / kFactorial;
-			return p;
+			if (double.IsInfinity(Math.Pow(lambda, k)))
+			{
+				var logLambda = k * Math.Log(lambda) - lambda - (k * Math.Log(k) - k + Math.Log(k * (1 + 4 * k * (1 + 2 * k))) / 6 + Math.Log(Math.PI) / 2);
+				return Math.Pow(Math.E, logLambda);
+			}
+			return Math.Pow(Math.E, -lambda) * Math.Pow(lambda, k) / Factorial(k);
 		}
 
 		public double CDF(long k)
@@ -62,6 +62,19 @@ namespace PoissonEvaluator
 			return (sum > 1) ? 1.0 : sum;
 		}
 
+
+		public double CDF1(long k)
+		{
+			var e = Math.Pow(Math.E, -lambda);
+			long i = 0;
+			var sum = 0.0;
+			while (i <= k)
+			{
+				sum += PMF(i);
+				i++;
+			}
+			return sum;
+		}
 		public double CDF0(long k)
 		{
 			var e = Math.Pow(Math.E, -lambda);
@@ -88,18 +101,20 @@ namespace PoissonEvaluator
 			return factorial;
 		}
 
-		public double Factorial12(double k)
-		{
-			//var factorial = Math.Pow(Math.E, k * Math.Log(k)) * Math.Pow(Math.E, -k -1);
-			var factorial = Math.Sqrt((2 * k + 1.0 / 3) * Math.PI) * Math.Pow(k, k) * Math.Pow(Math.E, -k);
-			return factorial;
-		}
+
 		//https://en.wikipedia.org/wiki/Factorial
 		//https://sv.wikipedia.org/wiki/Stirlings_formel
 		public double Factorial1(long k)
 		{
 			//Srinivasa Ramanujan (Ramanujan 1988)
 			return Math.Round(Math.Pow(Math.E, k * Math.Log(k) - k + Math.Log(k * (1 + 4 * k * (1 + 2 * k))) / 6 + Math.Log(Math.PI) / 2));
+		}
+
+		public double Factorial12(double k)
+		{
+			//var factorial = Math.Pow(Math.E, k * Math.Log(k)) * Math.Pow(Math.E, -k -1);
+			var factorial = Math.Sqrt((2 * k + 1.0 / 3) * Math.PI) * Math.Pow(k, k) * Math.Pow(Math.E, -k);
+			return factorial;
 		}
 
 		public double Factorial3(long k)
