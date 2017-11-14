@@ -100,7 +100,14 @@ namespace PoissonEvaluator
 		{
 			//Srinivasa Ramanujan (Ramanujan 1988)
 			return Math.Round(Math.Pow(Math.E, k * Math.Log(k) - k + Math.Log(k * (1 + 4 * k * (1 + 2 * k))) / 6 + Math.Log(Math.PI) / 2));
+		}
 
+		public double Factorial3(long k)
+		{
+			//Srinivasa Ramanujan (Ramanujan 1988) .
+
+			var c1 = Math.Sqrt(2 * Math.PI * k) * Math.Pow(k / Math.E, k);
+			return c1 * Math.Round(Math.Pow(Math.E, 1.0 / (12 * k) - 1.0 / (360 * Math.Pow(k, 3) + 1.0 / (20160 * Math.Pow(k, 5)) - 1.0 / (1814400 * Math.Pow(k, 7)))));
 		}
 
 	}

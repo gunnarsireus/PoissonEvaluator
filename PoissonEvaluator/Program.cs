@@ -35,15 +35,15 @@ namespace PoissonEvaaluator
 			//Console.WriteLine("CDF 250 : " + poisson.CDF(250) + ", CDF0 :" + poisson.CDF0(250));
 			Console.WriteLine("CDF 270 : " + poisson.CDF(270) + ", CDF0 :" + poisson.CDF0(270));
 
-			//for (int i = 3; i < 160; i++)
-			//{
-			//	Console.WriteLine("i: " + i + ", Factorial: " + poisson.Factorial(i) + ", Factorial1: " + poisson.Factorial1(i) + ", diff: " + (poisson.Factorial(i) - poisson.Factorial1(i)));
-			//}
-
 			for (int i = 3; i < 160; i++)
 			{
-				Console.WriteLine("i: " + i + ", PMF: " + poisson.PMF(i));
+				Console.WriteLine("i: " + i + ", Factorial: " + poisson.Factorial(i) + ", Factorial1: " + poisson.Factorial1(i) + ", diff: " + (poisson.Factorial(i) - poisson.Factorial1(i)));
 			}
+
+			//for (int i = 3; i < 160; i++)
+			//{
+			//	Console.WriteLine("i: " + i + ", PMF: " + poisson.PMF(i));
+			//}
 			Console.ReadKey();
 		}
 	}
