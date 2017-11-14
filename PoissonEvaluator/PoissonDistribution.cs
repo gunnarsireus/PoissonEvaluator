@@ -1,32 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace PoissonEvaluator
 {
 	public class PoissonDistribution
 	{
-		double lambda;
+		readonly double _lambda;
 
 		public PoissonDistribution(double lambda = 1.0)
 		{
-			this.lambda = lambda;
+			this._lambda = lambda;
 		}
 
-		public double PMF(long k)
+		public double Pmf(long k)
 		{
-			if (double.IsInfinity(Math.Pow(lambda, k)))
+			if (double.IsInfinity(Math.Pow(_lambda, k)))
 			{
-				var logLambda = k * Math.Log(lambda) - lambda - (k * Math.Log(k) - k + Math.Log(k * (1 + 4 * k * (1 + 2 * k))) / 6 + Math.Log(Math.PI) / 2);
+				var logLambda = k * Math.Log(_lambda) - _lambda - (k * Math.Log(k) - k + Math.Log(k * (1 + 4 * k * (1 + 2 * k))) / 6 + Math.Log(Math.PI) / 2);
 				return Math.Pow(Math.E, logLambda);
 			}
-			return Math.Pow(Math.E, -lambda) * Math.Pow(lambda, k) / Factorial(k);
+			return Math.Pow(Math.E, -_lambda) * Math.Pow(_lambda, k) / Factorial(k);
 		}
 
-		public double CDF(long k)
+		public double Cdf(long k)
 		{
-			var e = Math.Pow(Math.E, -lambda);
+			var e = Math.Pow(Math.E, -_lambda);
 			long i = 0;
 			var sum = 0.0;
 			var infinityIsFound = false;
@@ -36,23 +33,23 @@ namespace PoissonEvaluator
 				double n;
 				if (infinityIsFound)
 				{
-					var a = Math.Log(i * (1 + 4 * i * (1 + 2 * i))) / 6;
+					var log6ThTail = Math.Log(i * (1 + 4 * i * (1 + 2 * i))) / 6;
 
-					var lnN = i * Math.Log(lambda) - (i * Math.Log(i) - i + a + logPiDivTwo);
-					n = Math.Pow(Math.E, lnN - lambda);
+					var lnN = i * Math.Log(_lambda) - (i * Math.Log(i) - i + log6ThTail + logPiDivTwo);
+					n = Math.Pow(Math.E, lnN - _lambda);
 				}
 				else
 				{
-					if (i > 170 || double.IsInfinity(Math.Pow(lambda, i)))
+					if (i > 170 || double.IsInfinity(Math.Pow(_lambda, i)))
 					{
 						infinityIsFound = true;
-						var a = Math.Log(i * (1 + 4 * i * (1 + 2 * i))) / 6;
-						var lnN = i * Math.Log(lambda) - (i * Math.Log(i) - i + a + logPiDivTwo);
-						n = Math.Pow(Math.E, lnN - lambda);
+						var log6ThTail = Math.Log(i * (1 + 4 * i * (1 + 2 * i))) / 6;
+						var lnN = i * Math.Log(_lambda) - (i * Math.Log(i) - i + log6ThTail + logPiDivTwo);
+						n = Math.Pow(Math.E, lnN - _lambda);
 					}
 					else
 					{
-						n = e * Math.Pow(lambda, i) / Factorial(i);
+						n = e * Math.Pow(_lambda, i) / Factorial(i);
 					}
 				}
 
@@ -63,26 +60,27 @@ namespace PoissonEvaluator
 		}
 
 
-		public double CDF1(long k)
+		public double Cdf0(long k)
 		{
-			var e = Math.Pow(Math.E, -lambda);
+			var e = Math.Pow(Math.E, -_lambda);
 			long i = 0;
 			var sum = 0.0;
 			while (i <= k)
 			{
-				sum += PMF(i);
+				sum += e * Math.Pow(_lambda, i) / Factorial(i);
 				i++;
 			}
 			return sum;
 		}
-		public double CDF0(long k)
+
+		public double Cdf1(long k)
 		{
-			var e = Math.Pow(Math.E, -lambda);
+			var e = Math.Pow(Math.E, -_lambda);
 			long i = 0;
 			var sum = 0.0;
 			while (i <= k)
 			{
-				sum += e * Math.Pow(lambda, i) / Factorial(i);
+				sum += Pmf(i);
 				i++;
 			}
 			return sum;
@@ -124,6 +122,5 @@ namespace PoissonEvaluator
 			var c1 = Math.Sqrt(2 * Math.PI * k) * Math.Pow(k / Math.E, k);
 			return c1 * Math.Round(Math.Pow(Math.E, 1.0 / (12 * k) - 1.0 / (360 * Math.Pow(k, 3) + 1.0 / (20160 * Math.Pow(k, 5)) - 1.0 / (1814400 * Math.Pow(k, 7)))));
 		}
-
 	}
 }
